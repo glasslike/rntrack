@@ -12,13 +12,22 @@
 
 LINUX_MAKE := $(MAKE) -C MakeFiles/linux
 
-# Honour ARCH / CROSS_COMPILE from the environment or command line.
+# Forward every Linux makefile knob the operator may set on the command line.
+# CONFIG is the compile-time default config *file* (not a directory).
+# Empty CONFIG is omitted so the upstream ~/fido/etc/rntrack.conf default stays.
+MAKE_FWD := ARCH="$(or $(ARCH),$(shell uname -m))" \
+	CROSS_COMPILE="$(CROSS_COMPILE)" \
+	ENABLE_SCRIPTS="$(or $(ENABLE_SCRIPTS),0)" \
+	ENABLE_LOG_PID="$(or $(ENABLE_LOG_PID),1)" \
+	ENABLE_SYSLOG_LOG_FORMAT="$(or $(ENABLE_SYSLOG_LOG_FORMAT),0)" \
+	PREFIX="$(or $(PREFIX),/usr)" \
+	DEBUG="$(or $(DEBUG),0)"
+ifdef CONFIG
+MAKE_FWD += CONFIG="$(CONFIG)"
+endif
+
 all:
-	$(LINUX_MAKE) all ARCH="$(or $(ARCH),$(shell uname -m))" \
-		CROSS_COMPILE="$(CROSS_COMPILE)" \
-		ENABLE_SCRIPTS="$(or $(ENABLE_SCRIPTS),0)" \
-		ENABLE_LOG_PID="$(or $(ENABLE_LOG_PID),1)" \
-		PREFIX="$(or $(PREFIX),/usr)"
+	$(LINUX_MAKE) all $(MAKE_FWD)
 
 install:
 	$(LINUX_MAKE) install PREFIX="$(or $(PREFIX),/usr)" DESTDIR="$(DESTDIR)"
