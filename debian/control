@@ -1,0 +1,23 @@
+Source: rntrack
+Section: comm
+Priority: optional
+Maintainer: Alexey Matrosov <a.matrosoff@gmail.com>
+Build-Depends: debhelper-compat (= 13),
+               make,
+               g++,
+               gcc,
+               gzip,
+               g++-aarch64-linux-gnu [!arm64],
+               gcc-aarch64-linux-gnu [!arm64]
+Standards-Version: 4.6.2
+Homepage: https://github.com/vasilyevmax/rntrack
+Rules-Requires-Root: no
+
+Package: rntrack
+Architecture: arm64
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: FTN netmail tracker (Fidonet Technology Networks)
+ RNTrack parses Fidonet PKT files and message bases (OPUS *.msg, JAM,
+ Squish), matches messages against patterns, and runs configured actions.
+ This package is built for Debian 12 (bookworm) on aarch64/arm64, with
+ SMAPI type-size fixes so 32-bit on-disk fields stay 32-bit on LP64 ARM.

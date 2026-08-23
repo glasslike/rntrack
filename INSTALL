@@ -92,6 +92,29 @@ you'll have to build everything from the very beginning. Otherwise, you'll
 build only the changed sources.
 
 
+Debian 12 (bookworm) on aarch64 / arm64
+---------------------------------------
+
+RNTrack is not in the Debian 12 archive. Build it from this tree.
+
+On the Debian 12 aarch64 machine itself:
+
+    sudo apt install g++ make gzip
+    make
+    sudo make install
+
+Do not cross-compile on Ubuntu 24.04 and copy the binary to Debian 12:
+Ubuntu's aarch64 toolchain links against glibc 2.38+, which bookworm does
+not have. Use Debian 12's compiler, either natively or via Docker:
+
+    ./scripts/build-debian12-aarch64.sh
+
+This repository also contains SMAPI fixes required on aarch64 (32-bit
+`dword`, little-endian macros). Building unmodified upstream SMAPI on
+arm64 produces a binary that compiles but corrupts JAM/Squish bases.
+See README.md for the full Debian 12 / Docker / .deb instructions.
+
+
 Build a .rpm package
 ---------------------
 

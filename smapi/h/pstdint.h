@@ -667,7 +667,7 @@
     #endif
 
     #ifndef STDINT_H_UINTPTR_T_DEFINED
-        #if defined (__alpha__) || defined (__ia64__) || defined (__x86_64__) || defined (_WIN64)
+        #if defined (__alpha__) || defined (__ia64__) || defined (__x86_64__) || defined (__aarch64__) || defined (_WIN64)
             #define stdint_intptr_bits 64
         #elif defined (__WATCOMC__) || defined (__TURBOC__)
             #if defined(__TINY__) || defined(__SMALL__) || defined(__MEDIUM__)

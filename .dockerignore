@@ -1,0 +1,12 @@
+# Keep the Docker build context small and avoid copying host artifacts
+# into the image (especially a previously built amd64-incompatible binary).
+.git
+.gitignore
+out
+MakeFiles/linux/*.o
+MakeFiles/linux/rntrack
+doc/rntrack.1.gz
+tests/check_smapi_types
+debian/rntrack
+debian/.debhelper
+*.deb

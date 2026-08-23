@@ -1,0 +1,8 @@
+rntrack (2.3.1-1~deb12+arm64) bookworm; urgency=medium
+
+  * Build RNTrack 2.3.1 for Debian 12 (bookworm) aarch64/arm64.
+  * Fix SMAPI dword size and little-endian detection on AArch64 so JAM,
+    Squish and PKT on-disk layouts stay 32-bit little-endian.
+  * Teach the Linux makefile CROSS_COMPILE= and native uname -m ARCH.
+
+ -- Alexey Matrosov <a.matrosoff@gmail.com>  Sun, 23 Aug 2026 18:00:00 +0000

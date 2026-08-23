@@ -1,0 +1,51 @@
+#!/usr/bin/make -f
+# debian/rules - Build RNTrack for Debian 12 arm64 (native or cross).
+#
+# On an aarch64 Debian 12 host, gcc/g++ are already the target compilers.
+# On amd64, the aarch64-linux-gnu- cross toolchain from bookworm is used
+# so the binary links against glibc 2.36 (not a newer distro's libc).
+
+export DH_VERBOSE = 1
+
+# Debian's architecture name is arm64; RNTrack/SMAPI and uname use aarch64.
+DEB_HOST_ARCH ?= $(shell dpkg-architecture -qDEB_HOST_ARCH)
+
+ifeq ($(DEB_HOST_ARCH),arm64)
+    CROSS_PREFIX :=
+else
+    # Cross-building an arm64 package on amd64/i386 Debian 12.
+    CROSS_PREFIX := aarch64-linux-gnu-
+endif
+
+# Common make flags: PID in the log file is useful on a mailer hub.
+MAKE_FLAGS := ARCH=aarch64 \
+              CROSS_COMPILE=$(CROSS_PREFIX) \
+              PREFIX=/usr \
+              ENABLE_LOG_PID=1
+
+%:
+	dh $@
+
+override_dh_auto_clean:
+	$(MAKE) -C MakeFiles/linux distclean || true
+
+override_dh_auto_build:
+	$(MAKE) -C MakeFiles/linux -j$(shell nproc) $(MAKE_FLAGS)
+	# Compile the type-size probe with the same toolchain as the binary.
+	$(CROSS_PREFIX)gcc -O2 -Wall -DUNIX -I smapi/h -o tests/check_smapi_types \
+		tests/check_smapi_types.c
+
+override_dh_auto_test:
+	# When qemu-user is present, run the aarch64 type probe and -h.
+	if command -v qemu-aarch64-static >/dev/null 2>&1; then \
+		qemu-aarch64-static -L /usr/aarch64-linux-gnu tests/check_smapi_types; \
+		qemu-aarch64-static -L /usr/aarch64-linux-gnu MakeFiles/linux/rntrack -h; \
+	elif [ "$$(uname -m)" = aarch64 ]; then \
+		./tests/check_smapi_types; \
+		./MakeFiles/linux/rntrack -h; \
+	else \
+		echo "Skipping runtime tests (no aarch64 qemu and not running on aarch64)"; \
+	fi
+
+override_dh_auto_install:
+	$(MAKE) -C MakeFiles/linux install DESTDIR=$(CURDIR)/debian/rntrack PREFIX=/usr

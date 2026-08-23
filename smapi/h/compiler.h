@@ -812,6 +812,33 @@ int qq(void)
     #endif
 #endif
 
+/*
+ * 64-bit ARM (AArch64 / ARM64).
+ *
+ * GCC/Clang on Linux aarch64 define __aarch64__ but NOT __arm__, __ARMEL__
+ * or __ARM_EABI__. The 32-bit ARM block above therefore does not run, and
+ * SMAPI would leave dword as 64-bit unsigned long (see UNIX.h) and would
+ * skip the little-endian I/O helpers. Both break on-disk JAM/Squish/PKT
+ * layouts. Debian 12 (bookworm) arm64 is little-endian LP64.
+ */
+#if defined(__aarch64__)
+    #if !defined(__AARCH64__)
+        #define __AARCH64__
+    #endif
+    #ifndef __FLAT__
+        #define __FLAT__
+    #endif
+    #if !defined(__BIG_ENDIAN__) && !defined(__LITTLE_ENDIAN__)
+        #if defined(__AARCH64EB__) || \
+            (defined(__BYTE_ORDER__) && defined(__ORDER_BIG_ENDIAN__) && \
+             (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__))
+            #define __BIG_ENDIAN__
+        #else
+            #define __LITTLE_ENDIAN__
+        #endif
+    #endif
+#endif
+
 #if defined(SASC) && !defined(__AMIGA__) /* SAS C for AmigaDOS ***************/
     #define __AMIGA__
 #endif

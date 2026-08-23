@@ -19,14 +19,24 @@
 # ARCH=i486
 # ARCH=i686
 # ARCH=x86_64
-#    Target platform architecture. On default x86_64 is used
+# ARCH=aarch64
+#    Target platform architecture. Defaults to `uname -m` so a native
+#    Debian 12 arm64 box builds for aarch64 without extra flags.
+# CROSS_COMPILE=aarch64-linux-gnu-
+#    Toolchain prefix for a cross build (must end with '-').
+#    Example on Debian 12 amd64:
+#        make CROSS_COMPILE=aarch64-linux-gnu- ARCH=aarch64
 # STATIC=1
 #    Link RNtrack staticly. Implies USE_MUSL=1
 # DEBUG=1
 #    Build a debug version of the executable
 
 PREFIX ?= /usr
-ARCH ?= x86_64
+# Native architecture: x86_64, aarch64, ...  Used for musl triplets and
+# for the i486/i686 -march flags. A plain gcc already targets the host.
+ARCH ?= $(shell uname -m)
+# Optional GNU triplet prefix, e.g. aarch64-linux-gnu- or x86_64-linux-gnu-
+CROSS_COMPILE ?=
 # set to 1 to enable (in command line: make ENABLE_SCRIPTS=1 ENABLE_LOG_PID=1 ENABLE_SYSLOG_LOG_FORMAT=1)
 STATIC ?= 0
 USE_MUSL ?= 0
@@ -56,7 +66,8 @@ ifeq ($(DEBUG),0)
         CC := clang++
         CFLAGS := -O3 -Wall -Wextra -ferror-limit=0 -fPIC -fno-rtti -I$(HPPDIR) -I$(SRCDIR) -I$(smapi_HDIR) -I$(smapi_SRCDIR)
     else
-        CC := g++
+        # CROSS_COMPILE empty => host g++; aarch64-linux-gnu- => Debian arm64 cross g++
+        CC := $(CROSS_COMPILE)g++
         CFLAGS := -O3 -Wall -fPIC -fno-rtti -I$(HPPDIR) -I$(SRCDIR) -I$(smapi_HDIR) -I$(smapi_SRCDIR)
     endif
 else
@@ -67,7 +78,7 @@ else
         CC := clang++
         CFLAGS := -g -Og -Wall -Wextra -ferror-limit=0 -fPIC -fno-rtti -I$(HPPDIR) -I$(SRCDIR) -I$(smapi_HDIR) -I$(smapi_SRCDIR)
     else
-        CC := g++
+        CC := $(CROSS_COMPILE)g++
         CFLAGS := -g -Og -Wall -fPIC -fno-rtti -I$(HPPDIR) -I$(SRCDIR) -I$(smapi_HDIR) -I$(smapi_SRCDIR)
     endif
 endif

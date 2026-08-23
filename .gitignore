@@ -1,2 +1,14 @@
 result/
 Msg.txt
+MakeFiles/linux/*.o
+MakeFiles/linux/rntrack
+MakeFiles/linux/core
+doc/rntrack.1.gz
+tests/check_smapi_types
+out/
+debian/rntrack/
+debian/.debhelper/
+debian/files
+debian/*.substvars
+debian/*.debhelper.log
+*.deb

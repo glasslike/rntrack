@@ -178,13 +178,22 @@ typedef signed char sbyte;
 typedef unsigned short word;
 typedef signed short sword;
 
-#if defined(__ALPHA__) || defined(__X86_64__)    /* add other 64 bit systems here */
+/*
+ * dword / sdword must stay 32-bit: JAM, Squish and FTS-0001 PKT headers
+ * store 4-byte Intel-order fields. On LP64 (x86_64, aarch64, alpha)
+ * unsigned long is 8 bytes, so these types have to be unsigned int.
+ */
+#if defined(__ALPHA__) || defined(__X86_64__) || defined(__AARCH64__) || defined(__aarch64__)
     typedef unsigned int dword;
     typedef signed   int sdword;
 #else             /* 32 and 16 bit machines */
     typedef unsigned long dword;
     typedef signed long sdword;
 #endif
+
+/* Catch a future port where dword accidentally becomes 64-bit. */
+typedef char smapi_assert_dword_is_32bit[sizeof(dword) == 4 ? 1 : -1];
+typedef char smapi_assert_word_is_16bit[sizeof(word) == 2 ? 1 : -1];
 
 
 typedef   signed char        hCHAR;              /*  1 byte */
