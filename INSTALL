@@ -112,7 +112,7 @@ not have. Use Debian 12's compiler, either natively or via Docker:
 This repository also contains SMAPI fixes required on aarch64 (32-bit
 `dword`, little-endian macros). Building unmodified upstream SMAPI on
 arm64 produces a binary that compiles but corrupts JAM/Squish bases.
-See README.md for the full Debian 12 / Docker / .deb instructions.
+See DEBIAN12.md for the full Debian 12 / Docker / .deb instructions.
 
 
 Build a .rpm package

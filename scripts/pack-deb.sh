@@ -21,7 +21,7 @@ PKG="$OUTDIR/pkg"
 
 if [ ! -f "$BINARY" ]; then
     echo "error: binary not found: $BINARY" >&2
-    echo "Build it first (see README.md)." >&2
+    echo "Build it first (see DEBIAN12.md)." >&2
     exit 1
 fi
 
@@ -61,6 +61,7 @@ elif [ -f "$ROOT/doc/rntrack.1" ]; then
 fi
 
 install -m 0644 "$ROOT/README.md" "$PKG/usr/share/doc/rntrack/README.md"
+install -m 0644 "$ROOT/DEBIAN12.md" "$PKG/usr/share/doc/rntrack/DEBIAN12.md"
 install -m 0644 "$ROOT/COPYING"   "$PKG/usr/share/doc/rntrack/copyright"
 install -m 0644 "$ROOT/ChangeLog" "$PKG/usr/share/doc/rntrack/changelog"
 gzip -9n -f "$PKG/usr/share/doc/rntrack/changelog" || true
