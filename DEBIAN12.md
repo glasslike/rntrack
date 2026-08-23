@@ -30,7 +30,7 @@ rntrack -h
 Default install is `/usr/bin/rntrack`. Default config is
 `~/fido/etc/rntrack.conf` unless `CONFIG=` is set at build time.
 
-## Extended build (FTN prefix under `/home/map/ftn`)
+## Extended build (example, FTN prefix under custom path)
 
 Same layout as the other FTN tools: binaries in `usr/bin`, config directory
 `usr/etc/rntrack`.
